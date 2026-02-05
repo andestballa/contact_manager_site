@@ -7,22 +7,12 @@
       <form @submit.prevent="submit">
         <div class="field">
           <label>Email</label>
-          <input
-            type="email"
-            v-model="form.email"
-            placeholder="you@example.com"
-            required
-          />
+          <input type="email" v-model="form.email" placeholder="you@example.com" required />
         </div>
 
         <div class="field">
           <label>Password</label>
-          <input
-            type="password"
-            v-model="form.password"
-            placeholder="••••••••"
-            required
-          />
+          <input type="password" v-model="form.password" placeholder="••••••••" required />
         </div>
 
         <button type="submit">Login</button>
@@ -36,16 +26,24 @@
   </div>
 </template>
 
-<script setup>
-import { reactive } from 'vue'
+<script setup lang="ts">
+
+const auth = useAuth()
 
 const form = reactive({
   email: '',
   password: ''
 })
 
-const submit = () => {
-  console.log('Login:', form)
+const submit = async () => {
+  try {
+    const response = await auth.login(form.email, form.password)
+
+    console.log('Login success', response)
+    navigateTo("/")
+  } catch (err) {
+    console.error('Login failed', err)
+  }
 }
 </script>
 
