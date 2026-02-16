@@ -19,8 +19,8 @@
       </form>
 
       <p class="footer">
-        Don’t have an account?
-        <NuxtLink to="#">Register</NuxtLink>
+        Don't have an account?
+        <NuxtLink to="/signup">Register</NuxtLink>
       </p>
     </div>
   </div>
@@ -40,7 +40,7 @@ const submit = async () => {
     const response = await auth.login(form.email, form.password)
 
     console.log('Login success', response)
-    navigateTo("/")
+    navigateTo("/home")
   } catch (err) {
     console.error('Login failed', err)
   }

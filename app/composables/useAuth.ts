@@ -1,43 +1,78 @@
-// composables/useAuth.ts
+
 
 type User = {
-    user_id: string,
-    user_email: string,
-    token: string,
+  user_id: string
+  user_email: string
+  token: string
 }
 
 export const useAuth = () => {
-    const user = useState<User | null>('user', () => null)
+  const user = useState<User | null>("user", () => null)
+  const config = useRuntimeConfig()
+  const tokenCookie = useCookie<string | null>("token")
 
-    const login = async (email: string, password: string) => {
-        const res = await $fetch<User>('http://127.0.0.1:8000/api/login/', {
-            method: 'POST',
-            body: { email, password },
-        })
 
-        // Save token in cookie
-        const tokenCookie = useCookie('token')
-        tokenCookie.value = res.token
+  const login = async (email: string, password: string) => {
+    const res = await $fetch<User>(`${config.public.apiUrl}/api/login/`, {
+      method: "POST",
+      body: { email, password },
+    })
 
-        user.value = res
+    tokenCookie.value = res.token
+    user.value = res
 
-        return res
+    return res
+  }
+
+
+  const signup = async (email: string, password: string) => {
+    const res = await $fetch<User>(`${config.public.apiUrl}/api/signup/`, {
+      method: "POST",
+      body: { email, password },
+    })
+
+    tokenCookie.value = res.token
+    user.value = res
+
+    return res
+  }
+
+
+  const authFetch = async <T>(
+    url: string,
+    options: any = {}
+  ): Promise<T> => {
+    const token = tokenCookie.value
+
+    if (!token) {
+      throw new Error("Not authenticated")
     }
-    const logout = () => {
-        useCookie('token').value = null
-        user.value = null
-    }
 
-    const checkAuth = () => {
-        console.log({ user: user.value })
-        const token = useCookie('token').value
-        return !!token
-    }
+    return await $fetch<T>(`${config.public.apiUrl}${url}`, {
+      ...options,
+      headers: {
+        ...(options.headers || {}),
+        Authorization: `Token ${token}`,
+      },
+    })
+  }
 
+  
+  const logout = () => {
+    tokenCookie.value = null
+    user.value = null
+  }
 
-    const getToken = () => {
-        return useCookie("token").value
-    }
+  const checkAuth = () => !!tokenCookie.value
+  const getToken = () => tokenCookie.value
 
-    return { login, logout, checkAuth, user, getToken }
+  return {
+    login,
+    signup,
+    logout,
+    checkAuth,
+    getToken,
+    authFetch, 
+    user,
+  }
 }
