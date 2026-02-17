@@ -8,8 +8,6 @@
         Logout
       </button>
     </header>
-
-    
     <main class="content">
       <p>Home page content (coming soon)</p>
     </main>
@@ -22,10 +20,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const logout = () => {
-  
   localStorage.removeItem('token')
-
-
   router.push('/login')
 }
 </script>
