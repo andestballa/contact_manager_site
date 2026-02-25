@@ -1,4 +1,4 @@
-
+// composables/useAuth.ts
 
 type User = {
   user_id: string
@@ -7,14 +7,14 @@ type User = {
 }
 
 export const useAuth = () => {
-  const user = useState<User | null>("user", () => null)
+  const user = useState<User | null>('user', () => null)
+  const tokenCookie = useCookie<string | null>('token')
   const config = useRuntimeConfig()
-  const tokenCookie = useCookie<string | null>("token")
 
-
+  /* ---------------- LOGIN ---------------- */
   const login = async (email: string, password: string) => {
     const res = await $fetch<User>(`${config.public.apiUrl}/api/login/`, {
-      method: "POST",
+      method: 'POST',
       body: { email, password },
     })
 
@@ -24,10 +24,10 @@ export const useAuth = () => {
     return res
   }
 
-
+  /* ---------------- SIGNUP ---------------- */
   const signup = async (email: string, password: string) => {
     const res = await $fetch<User>(`${config.public.apiUrl}/api/signup/`, {
-      method: "POST",
+      method: 'POST',
       body: { email, password },
     })
 
@@ -37,7 +37,7 @@ export const useAuth = () => {
     return res
   }
 
-
+  /* ---------------- AUTH FETCH ---------------- */
   const authFetch = async <T>(
     url: string,
     options: any = {}
@@ -45,7 +45,7 @@ export const useAuth = () => {
     const token = tokenCookie.value
 
     if (!token) {
-      throw new Error("Not authenticated")
+      throw new Error('Not authenticated')
     }
 
     return await $fetch<T>(`${config.public.apiUrl}${url}`, {
@@ -57,22 +57,23 @@ export const useAuth = () => {
     })
   }
 
-  
+  /* ---------------- LOGOUT ---------------- */
   const logout = () => {
     tokenCookie.value = null
     user.value = null
   }
 
+  /* ---------------- HELPERS ---------------- */
   const checkAuth = () => !!tokenCookie.value
   const getToken = () => tokenCookie.value
 
   return {
+    user,
     login,
     signup,
     logout,
     checkAuth,
     getToken,
-    authFetch, 
-    user,
+    authFetch,
   }
 }
