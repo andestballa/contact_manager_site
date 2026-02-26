@@ -2,17 +2,17 @@
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 
-// 🔑 connect to auth composable
+
 const { signup } = useAuth()
 const router = useRouter()
 
-// form state
+
 const form = reactive({
   email: '',
   password: ''
 })
 
-// submit handler
+
 const submit = async () => {
   try {
     await signup(form.email, form.password)

@@ -6,50 +6,45 @@
     </header>
 
     <main class="content">
-      <h2>Contacts</h2>
-
-      
-      <div class="form">
-        <input v-model="form.name" placeholder="Name" />
-        <input v-model="form.surname" placeholder="Surname" />
-        <input v-model="form.email" placeholder="Email" />
-        <input v-model="form.phone_number" placeholder="Phone" />
-        <button @click="addContact">Add Contact</button>
-        <p v-if="error" class="error">{{ error }}</p>
+      <div class="title-section">
+        <h2>Contacts</h2>
+        <button class="btn-add" @click="router.push('/contacts-manage')">
+          + Add New Contact
+        </button>
       </div>
 
-      
       <div v-if="loading">Loading contacts...</div>
-      <ul v-else>
-        <li v-for="c in contacts" :key="c.id">
-          {{ c.name }} {{ c.surname }} – {{ c.email }}
-          <button @click="remove(c.id)">Delete</button>
+      
+      <ul v-else class="contact-list">
+        <li v-for="c in contacts" :key="c.id" class="contact-item">
+          <span class="contact-info">
+            {{ c.name }} {{ c.surname }} – {{ c.email }}
+          </span>
+          <div class="actions">
+            <button class="btn-edit" @click="router.push(`/contacts-manage?id=${c.id}`)">
+              Edit
+            </button>
+            <button class="btn-delete" @click="remove(c.id)">Delete</button>
+          </div>
         </li>
       </ul>
+
+      <p v-if="error" class="error">{{ error }}</p>
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, onMounted } from "vue"
+import { ref, onMounted } from "vue"
 import { useRouter } from "vue-router"
 import { useContacts } from '~/composables/useContacts'
 
 const router = useRouter()
-const { getContacts, createContact, deleteContact } = useContacts()
+const { getContacts, deleteContact } = useContacts()
 
-const contacts = ref<Contact[]>([])
+const contacts = ref<any[]>([]) // Ndrysho 'any' me tipin tend 'Contact'
 const loading = ref(false)
 const error = ref<string | null>(null)
-
-
-const form = reactive({
-  name: "",
-  surname: "",
-  email: "",
-  phone_number: "",
-})
-
 
 const loadContacts = async () => {
   loading.value = true
@@ -59,7 +54,6 @@ const loadContacts = async () => {
     contacts.value = res.results
   } catch (e: any) {
     error.value = "Failed to load contacts"
-    console.error(e)
   } finally {
     loading.value = false
   }
@@ -67,36 +61,15 @@ const loadContacts = async () => {
 
 onMounted(loadContacts)
 
-
-const addContact = async () => {
-  error.value = null
-  if (!form.name || !form.surname || !form.email || !form.phone_number) {
-    error.value = "All fields are required"
-    return
-  }
-  try {
-    await createContact({ ...form })
-    form.name = ""
-    form.surname = ""
-    form.email = ""
-    form.phone_number = ""
-    await loadContacts()
-  } catch (e: any) {
-    error.value = "Failed to create contact"
-    console.error(e)
-  }
-}
-
 const remove = async (id: number) => {
+  if(!confirm("Are you sure you want to delete this contact?")) return
   try {
     await deleteContact(id)
     contacts.value = contacts.value.filter(c => c.id !== id)
   } catch (e: any) {
     error.value = "Failed to delete contact"
-    console.error(e)
   }
 }
-
 
 const logout = () => {
   localStorage.removeItem("token")
@@ -123,12 +96,45 @@ const logout = () => {
   color: white;
   font-weight: 600;
   cursor: pointer;
-  transition: 0.2s;
 }
-.logout:hover { background: #9f0505; }
-.content { padding: 24px; color: #6b7280; }
-.form { margin-bottom: 20px; }
-.form input { margin-right: 8px; padding: 4px; }
-.form button { padding: 4px 8px; }
-.error { color: red; }
+
+.content { padding: 24px; color: #4b5563; }
+
+.title-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.btn-add {
+  background: #9e47b7;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.contact-list { list-style: none; padding: 0; }
+.contact-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.actions button {
+  margin-left: 8px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: 1px solid #d1d5db;
+  cursor: pointer;
+}
+
+.btn-edit { background: #f3f4f6; }
+.btn-delete { background: #fee2e2; color: #dc2626; border-color: #fca5a5 !important; }
+
+.error { color: red; margin-top: 10px; }
 </style>
