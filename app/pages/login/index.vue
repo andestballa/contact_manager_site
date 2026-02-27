@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <div class="card">
-      <h1>Welcome </h1>
+      <h1>Welcome</h1>
       <p class="subtitle">Please login to your account</p>
 
       <form @submit.prevent="submit">
@@ -15,7 +15,11 @@
           <input type="password" v-model="form.password" placeholder="••••••••" required />
         </div>
 
-        <button type="submit">Login</button>
+        <p v-if="errorMessage" class="error-text">{{ errorMessage }}</p>
+
+        <button type="submit" :disabled="loading">
+          {{ loading ? 'Logging in...' : 'Login' }}
+        </button>
       </form>
 
       <p class="footer">
@@ -27,8 +31,11 @@
 </template>
 
 <script setup lang="ts">
+import { reactive, ref } from 'vue'
 
 const auth = useAuth()
+const loading = ref(false)
+const errorMessage = ref('')
 
 const form = reactive({
   email: '',
@@ -36,16 +43,25 @@ const form = reactive({
 })
 
 const submit = async () => {
+  loading.value = true
+  errorMessage.value = ''
+  
   try {
     const response = await auth.login(form.email, form.password)
-
-    console.log('Login success', response)
-    navigateTo("/home")
-  } catch (err) {
+    console.log('Login success, Token saved:', response.token)
+    
+    
+    await navigateTo("/home")
+  } catch (err: any) {
+    errorMessage.value = err.message || 'Login failed. Check your credentials.'
     console.error('Login failed', err)
+  } finally {
+    loading.value = false
   }
 }
 </script>
+
+
 
 <style scoped>
 .page {
