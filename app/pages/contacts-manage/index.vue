@@ -97,14 +97,14 @@ const handleSubmit = async () => {
   
   try {
     if (isEditMode.value && contactId) {
-      // 1. Thirr API për përditësim
+    
       await updateContact(contactId, { ...form })
     } else {
-      // 2. Thirr API për krijim
+      
       await createContact({ ...form })
     }
     
-    // 3. Pas suksesit (Add ose Edit), kthehu menjëherë te Home
+    
     router.push('/home') 
     
   } catch (e: any) {
