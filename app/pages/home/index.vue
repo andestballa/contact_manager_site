@@ -13,7 +13,6 @@
         </button>
       </div>
 
-      
       <div class="search-section">
         <input
           v-model="searchQuery"
@@ -26,40 +25,21 @@
       <div v-if="loading">Loading contacts...</div>
 
       <ul v-else class="contact-list">
-        <li
-          v-for="c in filteredContacts"
-          :key="c.id"
-          class="contact-item"
-        >
+        <li v-for="c in filteredContacts" :key="c.id" class="contact-item">
           <span class="contact-info">
             {{ c.name }} {{ c.surname }} – {{ c.email }}
           </span>
           <div class="actions">
-            <button
-              class="btn-edit"
-              @click="router.push(`/contacts-manage?id=${c.id}`)"
-            >
+            <button class="btn-edit" @click="router.push(`/contacts-manage?id=${c.id}`)">
               Edit
             </button>
-            <button
-              class="btn-delete"
-              @click="remove(c.id)"
-            >
-              Delete
-            </button>
+            <button class="btn-delete" @click="remove(c.id)">Delete</button>
           </div>
         </li>
       </ul>
 
-      
-      <div
-        class="pagination"
-        v-if="!loading && totalPages > 1"
-      >
-        <button
-          :disabled="currentPage === 1"
-          @click="changePage(currentPage - 1)"
-        >
+      <div v-if="!loading && totalPages > 1" class="pagination">
+        <button :disabled="currentPage === 1" @click="changePage(currentPage - 1)">
           Previous
         </button>
 
@@ -72,10 +52,7 @@
           {{ page }}
         </button>
 
-        <button
-          :disabled="currentPage === totalPages"
-          @click="changePage(currentPage + 1)"
-        >
+        <button :disabled="currentPage === totalPages" @click="changePage(currentPage + 1)">
           Next
         </button>
       </div>
@@ -86,72 +63,73 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue"
-import { useRouter } from "vue-router"
-import { useContacts } from "~/composables/useContacts"
+import { ref, onMounted, computed } from "vue";
+import { useRouter } from "vue-router";
+import { useContacts } from "~/composables/useContacts";
 
-const router = useRouter()
-const { getContacts, deleteContact } = useContacts()
+const router = useRouter();
+const { getContacts, deleteContact } = useContacts();
 
-const contacts = ref<any[]>([])
-const loading = ref(false)
-const error = ref<string | null>(null)
+const contacts = ref<any[]>([]);
+const loading = ref(false);
+const error = ref<string | null>(null);
 
-const searchQuery = ref("")
-const currentPage = ref(1)
-const totalCount = ref(0)
-const pageSize = 5 
+const searchQuery = ref("");
+const currentPage = ref(1);
+const totalCount = ref(0);
+const pageSize = 5;
 
-const totalPages = computed(() =>
-  Math.ceil(totalCount.value / pageSize)
-)
+const totalPages = computed(() => Math.ceil(totalCount.value / pageSize));
 
 const loadContacts = async (page = 1) => {
-  loading.value = true
-  error.value = null
+  loading.value = true;
+  error.value = null;
 
   try {
-    const res = await getContacts(page)
-    contacts.value = res.results
-    totalCount.value = res.count
-    currentPage.value = page
+    
+    const res = await getContacts(page);
+    contacts.value = res.results;
+    totalCount.value = res.count;
+    currentPage.value = page;
   } catch {
-    error.value = "Failed to load contacts"
+    error.value = "Failed to load contacts";
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
-onMounted(() => loadContacts())
+onMounted(() => loadContacts());
 
 const changePage = (page: number) => {
-  loadContacts(page)
-}
+  loadContacts(page);
+};
 
 const filteredContacts = computed(() => {
-  if (!searchQuery.value) return contacts.value
+  if (!searchQuery.value) return contacts.value;
 
-  return contacts.value.filter(c =>
-    c.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    c.surname.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    c.email.toLowerCase().includes(searchQuery.value.toLowerCase())
-  )
-})
+  return contacts.value.filter(
+    (c) =>
+      c.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      c.surname.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      c.email.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
+});
 
 const remove = async (id: number) => {
-  if (!confirm("Are you sure you want to delete this contact?")) return
+  if (!confirm("Are you sure you want to delete this contact?")) return;
+
   try {
-    await deleteContact(id)
-    loadContacts(currentPage.value)
+    await deleteContact(id);
+    loadContacts(currentPage.value);
   } catch {
-    error.value = "Failed to delete contact"
+    error.value = "Failed to delete contact";
   }
-}
+};
 
 const logout = () => {
-  localStorage.removeItem("token")
-  router.push("/login")
-}
+  localStorage.removeItem("token");
+  router.push("/login");
+};
 </script>
 
 <style scoped>
