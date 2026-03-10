@@ -2,7 +2,7 @@
   <div class="manage-page">
     <header class="header">
       <div class="header-content">
-        <h1 class="logo" @click="router.push('/home')">MyApp</h1>
+        <h1 class="logo" @click="router.push('/home')">Contact Management</h1>
         <button class="btn-back" @click="router.push('/home')">
           <span>←</span> Kthehu te Lista
         </button>
@@ -13,9 +13,12 @@
       <div class="form-card">
         <div class="form-header">
           <h2>{{ isEditMode ? 'Edito Kontaktin' : 'Shto Kontakt të Ri' }}</h2>
-          <p>Plotësoni të dhënat për të {{ isEditMode ? 'përditësuar' : 'krijuar' }} kontaktin.</p>
+          <p>
+            Plotësoni të dhënat për të
+            {{ isEditMode ? 'përditësuar' : 'krijuar' }} kontaktin.
+          </p>
         </div>
-        
+
         <form @submit.prevent="handleSubmit" class="contact-form">
           <div class="form-grid">
             <div class="field">
@@ -31,21 +34,44 @@
 
           <div class="field">
             <label>Email</label>
-            <input v-model="form.email" type="email" placeholder="email@shembull.com" required />
+            <input v-model="form.email" type="email" placeholder="email@shembull.com" />
+            <span v-if="emailError" class="field-error">
+              {{ emailError }}
+            </span>
           </div>
 
           <div class="field">
             <label>Telefon</label>
-            <input v-model="form.phone_number" type="text" placeholder="06X XXX XXXX" required />
+            <input v-model="form.phone_number" type="text" placeholder="+3556XXXXXXXX" />
+            <span v-if="phoneError" class="field-error">
+              {{ phoneError }}
+            </span>
           </div>
 
           <div class="form-actions">
-            <button type="button" class="btn-cancel" @click="router.push('/home')">Anulo</button>
-            <button type="submit" class="btn-submit" :disabled="submitting">
-              {{ submitting ? 'Duke u ruajtur...' : (isEditMode ? 'Përditëso' : 'Ruaj Kontaktin') }}
+            <button
+              type="button"
+              class="btn-cancel"
+              @click="router.push('/home')"
+            >
+              Anulo
+            </button>
+
+            <button
+              type="submit"
+              class="btn-submit"
+              :disabled="submitting || formInvalid"
+            >
+              {{
+                submitting
+                  ? 'Duke u ruajtur...'
+                  : isEditMode
+                  ? 'Përditëso'
+                  : 'Ruaj Kontaktin'
+              }}
             </button>
           </div>
-          
+
           <div v-if="serverError" class="error-banner">
             {{ serverError }}
           </div>
@@ -58,7 +84,7 @@
 <script setup lang="ts">
 import { reactive, ref, onMounted, computed } from "vue"
 import { useRouter, useRoute } from "vue-router"
-import { useContacts } from '~/composables/useContacts'
+import { useContacts } from "~/composables/useContacts"
 
 const router = useRouter()
 const route = useRoute()
@@ -77,6 +103,24 @@ const form = reactive({
   phone_number: "",
 })
 
+
+const emailError = computed(() => {
+  if (!form.email) return null
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!emailRegex.test(form.email)) return "Email nuk është i saktë"
+  return null
+})
+
+const phoneError = computed(() => {
+  if (!form.phone_number) return null
+  const phoneRegex = /^\+?\d{8,15}$/
+  if (!phoneRegex.test(form.phone_number)) return "Numri i telefonit nuk është valid"
+  return null
+})
+
+const formInvalid = computed(() => !!(emailError.value || phoneError.value))
+
+
 onMounted(async () => {
   if (isEditMode.value && contactId) {
     try {
@@ -85,30 +129,36 @@ onMounted(async () => {
       form.surname = data.surname
       form.email = data.email
       form.phone_number = data.phone_number
-    } catch (e) {
+    } catch {
       serverError.value = "Nuk u gjet ky kontakt."
     }
   }
 })
 
+
 const handleSubmit = async () => {
+  if (formInvalid.value) {
+    serverError.value = "Ju lutem rregulloni gabimet në form."
+    return
+  }
+
   submitting.value = true
   serverError.value = null
-  
+
   try {
     if (isEditMode.value && contactId) {
-    
       await updateContact(contactId, { ...form })
     } else {
-      
       await createContact({ ...form })
     }
-    
-    
-    router.push('/home') 
-    
+    router.push("/home")
   } catch (e: any) {
-    serverError.value = "Dështoi ruajtja e kontaktit. Provoni përsëri."
+    if (e?.data) {
+      const errors = Object.values(e.data).flat()
+      serverError.value = errors.join(", ")
+    } else {
+      serverError.value = "Dështoi ruajtja e kontaktit."
+    }
   } finally {
     submitting.value = false
   }
@@ -119,7 +169,7 @@ const handleSubmit = async () => {
 .manage-page {
   min-height: 100vh;
   background-color: #f9fafb;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .header {
@@ -129,9 +179,6 @@ const handleSubmit = async () => {
   height: 70px;
   display: flex;
   align-items: center;
-  position: sticky;
-  top: 0;
-  z-index: 10;
 }
 
 .header-content {
@@ -156,11 +203,7 @@ const handleSubmit = async () => {
   padding: 0.5rem 1rem;
   border-radius: 8px;
   color: #374151;
-  font-weight: 500;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 
 .main-content {
@@ -176,12 +219,6 @@ const handleSubmit = async () => {
   padding: 2.5rem;
   border-radius: 16px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-}
-
-.form-header h2 {
-  font-size: 1.75rem;
-  color: #111827;
-  margin-bottom: 0.5rem;
 }
 
 .contact-form {
@@ -202,29 +239,25 @@ const handleSubmit = async () => {
   gap: 0.5rem;
 }
 
-.field label {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #374151;
-}
-
 input {
   padding: 0.75rem 1rem;
   border: 1px solid #d1d5db;
   border-radius: 10px;
-  font-size: 1rem;
 }
 
 input:focus {
   outline: none;
   border-color: #9e47b7;
-  box-shadow: 0 0 0 4px rgba(158, 71, 183, 0.1);
+}
+
+.field-error {
+  color: #dc2626;
+  font-size: 0.85rem;
 }
 
 .form-actions {
   display: flex;
   gap: 1rem;
-  margin-top: 1rem;
 }
 
 .btn-submit {
@@ -234,19 +267,15 @@ input:focus {
   border: none;
   padding: 0.8rem;
   border-radius: 10px;
-  font-weight: 600;
   cursor: pointer;
 }
 
 .btn-cancel {
   flex: 1;
   background: #f3f4f6;
-  color: #4b5563;
   border: none;
   padding: 0.8rem;
   border-radius: 10px;
-  font-weight: 600;
-  cursor: pointer;
 }
 
 .error-banner {

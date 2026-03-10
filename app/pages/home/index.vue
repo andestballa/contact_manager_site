@@ -1,7 +1,7 @@
 <template>
   <div>
     <header class="header">
-      <h1 class="logo">MyApp</h1>
+      <h1 class="logo">Contact Management</h1>
       <button class="logout" @click="logout">Logout</button>
     </header>
 
