@@ -1,150 +1,144 @@
 <template>
   <div class="page">
-    <div class="container">
-      <h1>Contacts</h1>
+    <div class="card">
+      <h1>Welcome</h1>
+      <p class="subtitle">Please login to your account</p>
 
-      <!-- Contacts List -->
-      <div v-if="contacts?.results.length">
-        <div 
-          v-for="contact in contacts.results" 
-          :key="contact.id" 
-          class="contact-card"
-        >
-          <h3>{{ contact.name }} {{ contact.surname }}</h3>
-          <p>{{ contact.email }}</p>
-          <p>{{ contact.phone_number }}</p>
+      <form @submit.prevent="submit">
+        <div class="field">
+          <label>Email</label>
+          <input type="email" v-model="form.email" placeholder="you@example.com" required />
         </div>
-      </div>
 
-      <p v-else class="no-data">No contacts found.</p>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" v-model="form.password" placeholder="••••••••" required />
+        </div>
 
-      <!-- ✅ Pagination (Shfaqet vetëm nëse ka më shumë se 1 faqe) -->
-      <div 
-        v-if="contacts && contacts.count > perPage" 
-        class="pagination"
-      >
-        <button 
-          @click="goToPage(currentPage - 1)" 
-          :disabled="!contacts.previous"
-        >
-          Previous
+        <p v-if="errorMessage" class="error-text">{{ errorMessage }}</p>
+
+        <button type="submit" :disabled="loading">
+          {{ loading ? 'Logging in...' : 'Login' }}
         </button>
+      </form>
 
-        <span>
-          Page {{ currentPage }} of {{ totalPages }}
-        </span>
-
-        <button 
-          @click="goToPage(currentPage + 1)" 
-          :disabled="!contacts.next"
-        >
-          Next
-        </button>
-      </div>
+      <p class="footer">
+        Don't have an account?
+        <NuxtLink to="/signup">Register</NuxtLink>
+      </p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { reactive, ref } from 'vue'
 
-type Contact = {
-  id: number
-  name: string
-  surname: string
-  email: string
-  phone_number: string
-  created_at: string
-  updated_at: string
-}
+const auth = useAuth()
+const loading = ref(false)
+const errorMessage = ref('')
 
-type PaginatedResponse<T> = {
-  count: number
-  next: string | null
-  previous: string | null
-  results: T[]
-}
-
-const contacts = ref<PaginatedResponse<Contact> | null>(null)
-const currentPage = ref(1)
-const perPage = ref(10)
-
-const config = useRuntimeConfig()
-
-// ✅ Total pages
-const totalPages = computed(() => {
-  if (!contacts.value) return 0
-  return Math.ceil(contacts.value.count / perPage.value)
+const form = reactive({
+  email: '',
+  password: ''
 })
 
-// ✅ Fetch contacts
-const fetchContacts = async (page = 1) => {
+const submit = async () => {
+  loading.value = true
+  errorMessage.value = ''
+  
   try {
-    const data = await $fetch<PaginatedResponse<Contact>>(
-      `${config.public.apiBase}/contacts/?page=${page}`
-    )
-
-    contacts.value = data
-    currentPage.value = page
-  } catch (error) {
-    console.error('Error fetching contacts:', error)
+    const response = await auth.login(form.email, form.password)
+    console.log('Login success, Token saved:', response.token)
+    
+    
+    await navigateTo("/home")
+  } catch (err: any) {
+    errorMessage.value = err.message || 'Login failed. Check your credentials.'
+    console.error('Login failed', err)
+  } finally {
+    loading.value = false
   }
 }
-
-// ✅ Change page
-const goToPage = (page: number) => {
-  if (page < 1 || page > totalPages.value) return
-  fetchContacts(page)
-}
-
-onMounted(() => {
-  fetchContacts()
-})
 </script>
+
+
 
 <style scoped>
 .page {
-  padding: 40px;
-  background: #f3f4f6;
   min-height: 100vh;
-}
-
-.container {
-  max-width: 700px;
-  margin: auto;
-}
-
-.contact-card {
-  background: white;
-  padding: 16px;
-  margin-bottom: 12px;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-}
-
-.no-data {
-  text-align: center;
-  color: gray;
-}
-
-.pagination {
-  margin-top: 20px;
+  background: linear-gradient(135deg, #afafb0, #8b5cf6);
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: center;
+}
+
+.card {
+  background: rgb(255, 255, 255);
+  width: 360px;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+h1 {
+  margin: 0;
+  text-align: center;
+}
+
+.subtitle {
+  text-align: center;
+  color: #6b7280;
+  margin-bottom: 24px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+label {
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: #374151;
+}
+
+input {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  outline: none;
+  transition: 0.2s;
+}
+
+input:focus {
+  border-color: #9b9ba0;
 }
 
 button {
-  padding: 8px 16px;
-  border-radius: 8px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
   border: none;
   background: #8963f1;
   color: white;
+  font-weight: 600;
   cursor: pointer;
+  transition: 0.2s;
 }
 
-button:disabled {
-  background: #ccc;
-  cursor: not-allowed;
+button:hover {
+  background: #5000fe;
+}
+
+.footer {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.footer a {
+  color: #ff0000;
+  font-weight: 500;
 }
 </style>
