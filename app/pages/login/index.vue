@@ -32,6 +32,7 @@
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
+import { useAuth } from '~/composables/useAuth'
 
 const auth = useAuth()
 const loading = ref(false)
@@ -45,13 +46,11 @@ const form = reactive({
 const submit = async () => {
   loading.value = true
   errorMessage.value = ''
-  
+
   try {
     const response = await auth.login(form.email, form.password)
     console.log('Login success, Token saved:', response.token)
-    
-    
-    await navigateTo("/home")
+    await navigateTo('/')
   } catch (err: any) {
     errorMessage.value = err.message || 'Login failed. Check your credentials.'
     console.error('Login failed', err)
@@ -60,8 +59,6 @@ const submit = async () => {
   }
 }
 </script>
-
-
 
 <style scoped>
 .page {
@@ -141,4 +138,16 @@ button:hover {
   color: #ff0000;
   font-weight: 500;
 }
+
+.error-text {
+  color: red;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
 </style>
+
+<script lang="ts">
+definePageMeta({
+  layout: 'auth'
+})
+</script>

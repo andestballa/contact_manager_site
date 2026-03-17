@@ -1,29 +1,3 @@
-<script setup lang="ts">
-import { reactive } from 'vue'
-import { useRouter } from 'vue-router'
-
-
-const { signup } = useAuth()
-const router = useRouter()
-
-
-const form = reactive({
-  email: '',
-  password: ''
-})
-
-
-const submit = async () => {
-  try {
-    await signup(form.email, form.password)
-    router.push('/home')
-  } catch (err: any) {
-    console.error(err)
-    alert(err?.data?.error || 'Signup failed')
-  }
-}
-</script>
-
 <template>
   <div class="page">
     <div class="card">
@@ -33,22 +7,12 @@ const submit = async () => {
       <form @submit.prevent="submit">
         <div class="field">
           <label>Email</label>
-          <input
-            type="email"
-            v-model="form.email"
-            required
-            autocomplete="email"
-          />
+          <input type="email" v-model="form.email" required autocomplete="email" />
         </div>
 
         <div class="field">
           <label>Password</label>
-          <input
-            type="password"
-            v-model="form.password"
-            required
-            autocomplete="new-password"
-          />
+          <input type="password" v-model="form.password" required autocomplete="new-password" />
         </div>
 
         <button type="submit">Sign up</button>
@@ -61,6 +25,30 @@ const submit = async () => {
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { reactive } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuth } from '~/composables/useAuth' 
+
+const router = useRouter()
+const { signup } = useAuth()
+
+const form = reactive({
+  email: '',
+  password: ''
+})
+
+const submit = async () => {
+  try {
+    await signup(form.email, form.password)
+    router.push('/')
+  } catch (err: any) {
+    console.error(err)
+    alert(err?.data?.error || 'Signup failed')
+  }
+}
+</script>
 
 <style scoped>
 .page {
@@ -122,3 +110,9 @@ button:hover {
   text-align: center;
 }
 </style>
+
+<script lang="ts">
+definePageMeta({
+  layout: 'auth'
+})
+</script>

@@ -1,13 +1,5 @@
 <template>
   <div class="manage-page">
-    <header class="header">
-      <div class="header-content">
-        <h1 class="logo" @click="router.push('/home')">Contact Management</h1>
-        <button class="btn-back" @click="router.push('/home')">
-          <span>←</span> Kthehu te Lista
-        </button>
-      </div>
-    </header>
 
     <main class="main-content">
       <div class="form-card">
@@ -19,40 +11,65 @@
           </p>
         </div>
 
-        <form @submit.prevent="handleSubmit" class="contact-form">
+        <form
+          @submit.prevent="handleSubmit"
+          class="contact-form"
+          autocomplete="off"
+        >
+          <input type="text" name="fakeusernameremembered" style="display:none">
+          <input type="password" name="fakepasswordremembered" style="display:none">
+
           <div class="form-grid">
             <div class="field">
               <label>Emri</label>
-              <input v-model="form.name" type="text" placeholder="Emri" required />
+              <input
+                v-model="form.name"
+                type="text"
+                placeholder="Emri"
+                autocomplete="new-password"
+                required
+              />
             </div>
 
             <div class="field">
               <label>Mbiemri</label>
-              <input v-model="form.surname" type="text" placeholder="Mbiemri" required />
+              <input
+                v-model="form.surname"
+                type="text"
+                placeholder="Mbiemri"
+                autocomplete="new-password"
+                required
+              />
             </div>
           </div>
 
           <div class="field">
             <label>Email</label>
-            <input v-model="form.email" type="email" placeholder="email@shembull.com" />
-            <span v-if="emailError" class="field-error">
-              {{ emailError }}
-            </span>
+            <input
+              v-model="form.email"
+              type="email"
+              placeholder="email@shembull.com"
+              autocomplete="new-password"
+            />
+            <span v-if="emailError" class="field-error">{{ emailError }}</span>
           </div>
 
           <div class="field">
             <label>Telefon</label>
-            <input v-model="form.phone_number" type="text" placeholder="+3556XXXXXXXX" />
-            <span v-if="phoneError" class="field-error">
-              {{ phoneError }}
-            </span>
+            <input
+              v-model="form.phone_number"
+              type="text"
+              placeholder="+3556XXXXXXXX"
+              autocomplete="new-password"
+            />
+            <span v-if="phoneError" class="field-error">{{ phoneError }}</span>
           </div>
 
           <div class="form-actions">
             <button
               type="button"
               class="btn-cancel"
-              @click="router.push('/home')"
+              @click="router.push('/')"
             >
               Anulo
             </button>
@@ -103,7 +120,6 @@ const form = reactive({
   phone_number: "",
 })
 
-
 const emailError = computed(() => {
   if (!form.email) return null
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -120,7 +136,6 @@ const phoneError = computed(() => {
 
 const formInvalid = computed(() => !!(emailError.value || phoneError.value))
 
-
 onMounted(async () => {
   if (isEditMode.value && contactId) {
     try {
@@ -134,7 +149,6 @@ onMounted(async () => {
     }
   }
 })
-
 
 const handleSubmit = async () => {
   if (formInvalid.value) {
@@ -151,7 +165,8 @@ const handleSubmit = async () => {
     } else {
       await createContact({ ...form })
     }
-    router.push("/home")
+
+    router.push("/")
   } catch (e: any) {
     if (e?.data) {
       const errors = Object.values(e.data).flat()
@@ -166,46 +181,6 @@ const handleSubmit = async () => {
 </script>
 
 <style scoped>
-.manage-page {
-  min-height: 100vh;
-  background-color: #f9fafb;
-  font-family: "Inter", sans-serif;
-}
-
-.header {
-  background: white;
-  border-bottom: 1px solid #e5e7eb;
-  padding: 0 1.5rem;
-  height: 70px;
-  display: flex;
-  align-items: center;
-}
-
-.header-content {
-  max-width: 1000px;
-  margin: 0 auto;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.logo {
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: #9e47b7;
-  cursor: pointer;
-}
-
-.btn-back {
-  background: transparent;
-  border: 1px solid #d1d5db;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  color: #374151;
-  cursor: pointer;
-}
-
 .main-content {
   padding: 3rem 1rem;
   display: flex;
