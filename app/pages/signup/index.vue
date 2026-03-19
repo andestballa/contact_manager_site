@@ -1,29 +1,3 @@
-<script setup lang="ts">
-import { reactive } from 'vue'
-import { useRouter } from 'vue-router'
-
-
-const { signup } = useAuth()
-const router = useRouter()
-
-
-const form = reactive({
-  email: '',
-  password: ''
-})
-
-
-const submit = async () => {
-  try {
-    await signup(form.email, form.password)
-    router.push('/home')
-  } catch (err: any) {
-    console.error(err)
-    alert(err?.data?.error || 'Signup failed')
-  }
-}
-</script>
-
 <template>
   <div class="page">
     <div class="card">
@@ -33,22 +7,12 @@ const submit = async () => {
       <form @submit.prevent="submit">
         <div class="field">
           <label>Email</label>
-          <input
-            type="email"
-            v-model="form.email"
-            required
-            autocomplete="email"
-          />
+          <input type="email" v-model="form.email" required autocomplete="email" />
         </div>
 
         <div class="field">
           <label>Password</label>
-          <input
-            type="password"
-            v-model="form.password"
-            required
-            autocomplete="new-password"
-          />
+          <input type="password" v-model="form.password" required autocomplete="new-password" />
         </div>
 
         <button type="submit">Sign up</button>
@@ -62,13 +26,51 @@ const submit = async () => {
   </div>
 </template>
 
+<script setup lang="ts">
+import { reactive } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuth } from '~/composables/useAuth' 
+
+const router = useRouter()
+const { signup } = useAuth()
+
+const form = reactive({
+  email: '',
+  password: ''
+})
+
+const submit = async () => {
+  try {
+    await signup(form.email, form.password)
+    router.push('/')
+  } catch (err: any) {
+    console.error(err)
+    alert(err?.data?.error || 'Signup failed')
+  }
+}
+</script>
+
+<script lang="ts">
+definePageMeta({
+  layout: 'auth'
+})
+</script>
+
+
 <style scoped>
+
+
 .page {
-  min-height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #aa9684; 
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #aa9684;
+  font-family: 'Inter', sans-serif;
 }
 
 .card {
@@ -77,11 +79,13 @@ const submit = async () => {
   background: white;
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  
 }
 
 .subtitle {
   text-align: center;
   color: #6b7280;
+  font-family: 'Inter', sans-serif;
   margin-bottom: 24px;
 }
 
@@ -121,4 +125,7 @@ button:hover {
   margin-top: 20px;
   text-align: center;
 }
+
+
 </style>
+

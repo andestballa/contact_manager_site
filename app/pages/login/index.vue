@@ -32,6 +32,7 @@
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
+import { useAuth } from '~/composables/useAuth'
 
 const auth = useAuth()
 const loading = ref(false)
@@ -45,13 +46,11 @@ const form = reactive({
 const submit = async () => {
   loading.value = true
   errorMessage.value = ''
-  
+
   try {
     const response = await auth.login(form.email, form.password)
     console.log('Login success, Token saved:', response.token)
-    
-    
-    await navigateTo("/home")
+    await navigateTo('/')
   } catch (err: any) {
     errorMessage.value = err.message || 'Login failed. Check your credentials.'
     console.error('Login failed', err)
@@ -61,12 +60,20 @@ const submit = async () => {
 }
 </script>
 
-
+<script lang="ts">
+definePageMeta({
+  layout: 'auth'
+})
+</script>
 
 <style scoped>
 .page {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #afafb0, #8b5cf6);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background:#8b5cf6; 
   display: flex;
   align-items: center;
   justify-content: center;
@@ -78,17 +85,20 @@ const submit = async () => {
   padding: 32px;
   border-radius: 16px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  font-family: 'Inter', sans-serif;
 }
 
 h1 {
   margin: 0;
   text-align: center;
+  font-family: 'Inter', sans-serif;
 }
 
 .subtitle {
   text-align: center;
   color: #6b7280;
   margin-bottom: 24px;
+  font-family: 'Inter', sans-serif;
 }
 
 .field {
@@ -141,4 +151,11 @@ button:hover {
   color: #ff0000;
   font-weight: 500;
 }
+
+.error-text {
+  color: red;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
 </style>
+
