@@ -50,13 +50,27 @@ const submit = async () => {
 }
 </script>
 
+<script lang="ts">
+definePageMeta({
+  layout: 'auth'
+})
+</script>
+
+
 <style scoped>
+
+
 .page {
-  min-height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #aa9684; 
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #aa9684;
+  font-family: 'Inter', sans-serif;
 }
 
 .card {
@@ -65,11 +79,13 @@ const submit = async () => {
   background: white;
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  
 }
 
 .subtitle {
   text-align: center;
   color: #6b7280;
+  font-family: 'Inter', sans-serif;
   margin-bottom: 24px;
 }
 
@@ -109,10 +125,7 @@ button:hover {
   margin-top: 20px;
   text-align: center;
 }
+
+
 </style>
 
-<script lang="ts">
-definePageMeta({
-  layout: 'auth'
-})
-</script>

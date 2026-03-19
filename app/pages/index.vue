@@ -123,9 +123,11 @@ const remove = async (id: number) => {
 </script>
 
 <style scoped>
+
 .content {
   padding: 24px;
-  color: #4b5563;
+  color: #363c43;
+  font-family: 'Inter', sans-serif; 
 }
 
 .title-section {
@@ -142,6 +144,7 @@ const remove = async (id: number) => {
   border-radius: 6px;
   border: none;
   cursor: pointer;
+  font-family: inherit;
 }
 
 .search-section {
@@ -155,6 +158,7 @@ const remove = async (id: number) => {
   border-radius: 6px;
   border: 1px solid #d1d5db;
   outline: none;
+  font-family: inherit;
 }
 
 .search-input:focus {
@@ -174,12 +178,18 @@ const remove = async (id: number) => {
   border-bottom: 1px solid #f3f4f6;
 }
 
+.contact-info {
+  font-family: inherit; 
+}
+
 .actions button {
   margin-left: 8px;
   padding: 5px 10px;
   border-radius: 4px;
   border: 1px solid #d1d5db;
   cursor: pointer;
+  font-family: inherit;
+  font-weight: 500;
 }
 
 .btn-edit {
@@ -204,6 +214,7 @@ const remove = async (id: number) => {
   border-radius: 6px;
   border: 1px solid #d1d5db;
   cursor: pointer;
+  font-family: inherit;
 }
 
 .page-number.active {

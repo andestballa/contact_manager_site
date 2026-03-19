@@ -1,7 +1,7 @@
 <template>
   <div>
     <header class="header">
-      <h1 class="logo" @click="goHome">Contact Management</h1>
+      <h1 class="logo" >Contact Management</h1>
       <button class="logout" @click="logout">Logout</button>
     </header>
 
@@ -14,15 +14,13 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 
-// Nëse ke composable useAuth
+
 import { useAuth } from '~/composables/useAuth'
 
 const router = useRouter()
 const auth = useAuth()
 
-const goHome = () => {
-  router.push('/home') 
-}
+
 
 const logout = () => {
  
@@ -43,6 +41,7 @@ const logout = () => {
   padding: 16px 32px;
   border-bottom: 1px solid #ddd;
   background: white;
+  font-family: 'Inter', sans-serif;
 }
 
 .logo {

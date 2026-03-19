@@ -185,6 +185,7 @@ const handleSubmit = async () => {
   padding: 3rem 1rem;
   display: flex;
   justify-content: center;
+  font-family: 'Inter', sans-serif;
 }
 
 .form-card {
@@ -218,6 +219,7 @@ input {
   padding: 0.75rem 1rem;
   border: 1px solid #d1d5db;
   border-radius: 10px;
+  font-family: 'Inter', sans-serif;
 }
 
 input:focus {
@@ -228,6 +230,7 @@ input:focus {
 .field-error {
   color: #dc2626;
   font-size: 0.85rem;
+  font-family: 'Inter', sans-serif;
 }
 
 .form-actions {
@@ -243,6 +246,7 @@ input:focus {
   padding: 0.8rem;
   border-radius: 10px;
   cursor: pointer;
+  font-family: 'Inter', sans-serif;
 }
 
 .btn-cancel {
