@@ -203,10 +203,16 @@ const handleSubmit = async () => {
   gap: 1.5rem;
 }
 
+@media (max-width: 768px) {
+  .form-card {
+    padding: 1.5rem;
+  }
+}
+
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
 }
 
 .field {
@@ -225,12 +231,14 @@ input {
 input:focus {
   outline: none;
   border-color: #9e47b7;
+  font-family: 'Inter', sans-serif;
 }
 
 .field-error {
   color: #dc2626;
   font-size: 0.85rem;
   font-family: 'Inter', sans-serif;
+  
 }
 
 .form-actions {
@@ -247,6 +255,7 @@ input:focus {
   border-radius: 10px;
   cursor: pointer;
   font-family: 'Inter', sans-serif;
+  
 }
 
 .btn-cancel {
@@ -255,6 +264,7 @@ input:focus {
   border: none;
   padding: 0.8rem;
   border-radius: 10px;
+  font-family: 'Inter', sans-serif;
 }
 
 .error-banner {
@@ -263,5 +273,6 @@ input:focus {
   padding: 0.75rem;
   border-radius: 8px;
   text-align: center;
+  font-family: 'Inter', sans-serif;
 }
 </style>

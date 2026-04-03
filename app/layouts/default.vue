@@ -1,7 +1,7 @@
 <template>
   <div>
     <header class="header">
-      <h1 class="logo" >Contact Management</h1>
+      <h1 class="logo" @click="goHome">Contact Management</h1>
       <button class="logout" @click="logout">Logout</button>
     </header>
 
@@ -20,6 +20,9 @@ import { useAuth } from '~/composables/useAuth'
 const router = useRouter()
 const auth = useAuth()
 
+const goHome = () => {
+  router.push('/')
+}
 
 
 const logout = () => {
@@ -38,30 +41,40 @@ const logout = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 32px;
+  padding: 24px 40px;
   border-bottom: 1px solid #ddd;
   background: white;
   font-family: 'Inter', sans-serif;
 }
 
 .logo {
-  font-size: 40px;
+  font-size: 32px;
   color: #8e44ad;
   cursor: pointer;
-  font-weight: bold;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
 }
 
 .logout {
-  background: #ff4d4f;
-  border: none;
+   background: #ef4444;
   color: white;
-  padding: 10px 20px;
+  border: none;
+  padding: 10px 18px;
   border-radius: 10px;
   cursor: pointer;
-  font-weight: bold;
+  transition: 0.2s;
+  margin-left: 20px;
+  font-family: 'Inter', sans-serif;
 }
 
 .content {
-  padding: 20px 32px;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Inter', sans-serif;
+}
+
+.logout:hover {
+  background: #dc2626;
 }
 </style>

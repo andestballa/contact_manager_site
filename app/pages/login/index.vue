@@ -73,7 +73,7 @@ definePageMeta({
   left: 0;
   width: 100%;
   height: 100%;
-  background:#8b5cf6; 
+  background:#fdfdfd; 
   display: flex;
   align-items: center;
   justify-content: center;
@@ -81,7 +81,8 @@ definePageMeta({
 
 .card {
   background: rgb(255, 255, 255);
-  width: 360px;
+  width: 100%;
+  max-width: 360px;
   padding: 32px;
   border-radius: 16px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
@@ -130,7 +131,7 @@ button {
   padding: 12px;
   border-radius: 10px;
   border: none;
-  background: #8963f1;
+  background: #57565b;
   color: white;
   font-weight: 600;
   cursor: pointer;
@@ -138,7 +139,7 @@ button {
 }
 
 button:hover {
-  background: #5000fe;
+  background: #7c7b7e;
 }
 
 .footer {

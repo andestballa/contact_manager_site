@@ -134,35 +134,46 @@ const remove = async (id: number) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+}
+
+.title-section h2 {
+  font-size: 24px;
+  font-weight: 600;
 }
 
 .btn-add {
-  background: #9e47b7;
+   background: linear-gradient(135deg, #8b5cf6, #a855f7);
   color: white;
-  padding: 10px 16px;
-  border-radius: 6px;
+  padding: 10px 18px;
+  border-radius: 10px;
   border: none;
   cursor: pointer;
-  font-family: inherit;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.btn-add:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(139, 92, 246, 0.3);
 }
 
 .search-section {
-  margin-bottom: 16px;
+  margin-bottom: 2px;
 }
 
 .search-input {
   width: 100%;
-  max-width: 400px;
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
-  outline: none;
-  font-family: inherit;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: white;
+  transition: 0.2s;
 }
 
 .search-input:focus {
-  border-color: #9e47b7;
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
 }
 
 .contact-list {
@@ -171,56 +182,66 @@ const remove = async (id: number) => {
 }
 
 .contact-item {
-  display: flex;
+   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px;
-  border-bottom: 1px solid #f3f4f6;
+  padding: 16px;
+  margin-bottom: 12px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+  transition: 0.2s;
+}
+
+.contact-item:hover {
+  transform: translateY(-2px);
 }
 
 .contact-info {
   font-family: inherit; 
+  font-size: 15px;
+  color: #374151;
 }
 
-.actions button {
-  margin-left: 8px;
-  padding: 5px 10px;
-  border-radius: 4px;
-  border: 1px solid #d1d5db;
-  cursor: pointer;
-  font-family: inherit;
-  font-weight: 500;
+.actions {
+  display: flex;
+  gap: 8px;
 }
 
 .btn-edit {
   background: #f3f4f6;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
 .btn-delete {
   background: #fee2e2;
   color: #dc2626;
-  border-color: #fca5a5 !important;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
 .pagination {
-  margin-top: 20px;
+  margin-top: 24px;
   display: flex;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .pagination button {
   padding: 6px 12px;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
-  cursor: pointer;
-  font-family: inherit;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: white;
 }
 
 .page-number.active {
-  background: #9e47b7;
+  background: #8b5cf6;
   color: white;
-  border-color: #9e47b7;
 }
 
 .pagination button:disabled {
